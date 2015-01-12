@@ -5,21 +5,40 @@
 #include <stdio.h>
 
 
+int i = 0;
+
 // Note the return type: void*
-void* someThreadFunction(){
-    printf("Hello from a thread!\n")
+void* thread_1_function(){
+    
+	for(int n = 0;n<1000000;n++){
+		i++;
+	}
+	
     return NULL;
 }
 
-
+void* thread_2_function(){
+    
+	for(int n = 0;n<1000000;n++){
+		i--;
+	}
+	
+    return NULL;
+}
 
 int main(){
-    pthread_t someThread;
-    pthread_create(&someThread, NULL, someThreadFunction, NULL);
-    // Arguments to a thread would be passed here ---------^
+
+	
+
+    pthread_t thread_1;
+    pthread_create(&thread_1, NULL, thread_1_function, NULL);
     
-    pthread_join(someThread, NULL);
-    printf("Hello from main!"\n);
+	pthread_t thread_2;
+    pthread_create(&thread_2, NULL, thread_2_function, NULL);
+    
+    pthread_join(thread_1, NULL);
+	pthread_join(thread_2, NULL);
+    
+	printf("%i\n",i);
     return 0;
-    
 }
