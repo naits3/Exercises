@@ -6,20 +6,25 @@ from threading import Thread
 i = 0
 
 def someThreadFunction():
-    print("Hello from a thread!")
+    for i in range(1,1000000):
+    	i = i + 1
 
-# Potentially useful thing:
-#   In Python you "import" a global variable, instead of "export"ing it when you declare it
-#   (This is probably an effort to make you feel bad about typing the word "global")
-    global i
-
-
+def someAnotherThreadFunction():
+	for i in range(1,1000000):
+		i = i - 1
+		
 def main():
-    someThread = Thread(target = someThreadFunction, args = (),)
-    someThread.start()
+	global i
+	someThread = Thread(target = someThreadFunction, args = (),)
+	someAnotherThread = Thread(target = someAnotherThreadFunction, args = (),)    
+	
+	someThread.start()
+	someThread.join()
+	
+	someAnotherThread.start()
+	someAnotherThread.join()
     
-    someThread.join()
-    print("Hello from main!")
-
-
+	print("Hello from main!")
+	print(i)
+    
 main()
