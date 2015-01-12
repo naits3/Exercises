@@ -10,17 +10,26 @@ import (
     "time"
 )
 
-func someGoroutine() {
-    Println("Hello from a goroutine!")
+var i int = 0;  
+
+func goroutine_1() {
+    for n := 0;n<1000000;n++{
+		i++;
+	}
+}
+
+func goroutine_2() {
+    for n := 0;n<1000000;n++{
+		i--;
+	}
 }
 
 func main() {
-    runtime.GOMAXPROCS(runtime.NumCPU())    // I guess this is a hint to what GOMAXPROCS does...
-                                            // Try doing the exercise both with and without it!
-    go someGoroutine()                      // This spawns someGoroutine() as a goroutine
-
+    runtime.GOMAXPROCS(runtime.NumCPU())          
+    go goroutine_1() 
+	time.Sleep(100*time.Millisecond)                     
+	go goroutine_2()
     // We have no way to wait for the completion of a goroutine (without additional syncronization of some sort)
-    // We'll come back to using channels in Exercise 2. For now: Sleep.
     time.Sleep(100*time.Millisecond)
-    Println("Hello from main!")
+    Println(i)
 }
