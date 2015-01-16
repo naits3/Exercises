@@ -6,12 +6,18 @@
 
 
 int i = 0;
+pthread_mutex_t lock;
+
 
 // Note the return type: void*
 void* thread_1_function(){
-    
+
 	for(int n = 0;n<1000000;n++){
+		
+    	pthread_mutex_lock(&lock);
 		i++;
+		//printf("%i\n",i);
+		pthread_mutex_unlock(&lock);
 	}
 	
     return NULL;
@@ -19,16 +25,16 @@ void* thread_1_function(){
 
 void* thread_2_function(){
     
-	for(int n = 0;n<1000000;n++){
+	for(int n = 0;n<1000002;n++){
+		pthread_mutex_lock(&lock);
 		i--;
+		//printf("%i\n",i);
+		pthread_mutex_unlock(&lock);
 	}
-	
     return NULL;
 }
 
 int main(){
-
-	
 
     pthread_t thread_1;
     pthread_create(&thread_1, NULL, thread_1_function, NULL);
@@ -38,6 +44,8 @@ int main(){
     
     pthread_join(thread_1, NULL);
 	pthread_join(thread_2, NULL);
+
+	pthread_mutex_destroy(&lock);
     
 	printf("%i\n",i);
     return 0;
