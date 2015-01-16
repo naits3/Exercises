@@ -5,26 +5,28 @@ from threading import Thread
 
 i = 0
 
+
 def someThreadFunction():
-    for i in range(1,1000000):
-    	i = i + 1
+	global i
+	for j in range(1,1000000):
+		i = i + 1
 
 def someAnotherThreadFunction():
-	for i in range(1,1000000):
+	global i
+	for j in range(1,1000000):
 		i = i - 1
 		
+
 def main():
-	global i
 	someThread = Thread(target = someThreadFunction, args = (),)
+	someThread.start()
 	someAnotherThread = Thread(target = someAnotherThreadFunction, args = (),)    
 	
-	someThread.start()
-	someThread.join()
-	
 	someAnotherThread.start()
+
+	
+	someThread.join()
 	someAnotherThread.join()
-    
-	print("Hello from main!")
 	print(i)
     
 main()
