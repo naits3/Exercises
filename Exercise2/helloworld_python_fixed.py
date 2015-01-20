@@ -2,29 +2,36 @@
 # python helloworld_python.py
 
 from threading import Thread
-
+from threading import Lock
 i = 0
 
+lock = Lock()
+
+
 def someThreadFunction():
-    for i in range(1,1000000):
-    	i = i + 1
+	lock.acquire()
+	global i
+	for j in range(1,1000000):
+		i = i + 1
+	lock.release()
 
 def someAnotherThreadFunction():
-	for i in range(1,1000000):
-		i = i - 1
-		
-def main():
+	lock.acquire()
 	global i
+	for j in range(1,1000000):
+		i = i - 1
+	lock.release()	
+
+def main():
 	someThread = Thread(target = someThreadFunction, args = (),)
-	someAnotherThread = Thread(target = someAnotherThreadFunction, args = (),)    
-	
 	someThread.start()
-	someThread.join()
 	
+	someAnotherThread = Thread(target = someAnotherThreadFunction, args = (),)    
 	someAnotherThread.start()
+	
+	someThread.join()
 	someAnotherThread.join()
-    
-	print("Hello from main!")
+	
 	print(i)
     
 main()
