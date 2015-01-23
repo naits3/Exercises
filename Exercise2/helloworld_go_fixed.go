@@ -35,6 +35,6 @@ func main() {
     go goroutine_1()                    
     go goroutine_2()
     // We have no way to wait for the completion of a goroutine (without additional syncronization of some sort)
-    time.Sleep(100*time.Millisecond)
+    time.Sleep(400*time.Millisecond)
     Println(i)
 }
