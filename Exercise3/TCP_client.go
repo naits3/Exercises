@@ -25,7 +25,7 @@ func main() {
 
 	for {
 		time.Sleep(1000 * time.Millisecond)
-		n, err := conn.Write([]byte("129.241.187.158:20010/0"))
+		n, err := conn.Write([]byte("Connect to: 129.241.187.158:20010\\0"))
 		if err != nil {
 			fmt.Println("Error writing to server: ", err)
 			return
