@@ -9,8 +9,11 @@ import (
 )
 
 func main() {
-	host := "129.241.187.136:20010" // IP you want to send TO. Is the port destination or source?
-	conn, err := net.Dial("tcp",host)
+
+	host := "129.241.187.136:80"
+	addr, _ := net.ResolveTCPAddr("tcp",host)
+	
+	conn, err := net.DialTCP("tcp", nil, addr)
 
 	if err != nil{
 		fmt.Println("Error connecting to ", host, ": ",err)
