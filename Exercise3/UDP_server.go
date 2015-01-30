@@ -10,7 +10,7 @@ import (
 
 func main() {
 	addr := net.UDPAddr{
-		Port: 20010,
+		Port: 20020,
 		IP: net.ParseIP("129.241.187.255"), //Why does this IP have to be BroadCast?
 	}
 

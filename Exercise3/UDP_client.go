@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	host := "129.241.187.136:20010" // IP you want to send TO. Is the port destination or source?
+	host := "129.241.187.255:20020" // IP you want to send TO. Is the port destination or source?
 	conn, err := net.Dial("udp",host)
 
 	if err != nil{

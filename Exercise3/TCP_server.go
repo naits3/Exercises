@@ -9,14 +9,11 @@ import (
 )
 
 func main() {
-	addr := net.TCPAddr{
-		Port: 8,
-		IP: net.ParseIP("129.241.187.255"), //Why does this IP have to be BroadCast?
-	}
+	
 
 	// Create a socket:
 	fmt.Println("Creating a socket..")
-	listener, err := net.ListenTCP("tcp", &addr)
+	listener, err := net.Listen("tcp", ":20020")
 
 	
 	if err != nil {
@@ -24,14 +21,17 @@ func main() {
 		return
 	}
 
-	conn, err := listener.Accept()
+	
 
-	fmt.Println("..Socket created! Listening to Port ",addr.Port)
+	fmt.Println("..Socket created! Listening to Port ")
 
-	var buffer []byte = make([]byte, 1500)
-	defer conn.Close()
+	var buffer []byte = make([]byte, 1024)
+	//defer conn.Close()
 
 	for {
+
+		conn, err := listener.Accept()
+
 		time.Sleep(100 * time.Millisecond)
 		fmt.Println("h")
 
