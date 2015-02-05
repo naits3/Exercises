@@ -13,7 +13,7 @@ func main() {
 
 	// Create a socket:
 	fmt.Println("Creating a socket..")
-	listener, err := net.Listen("tcp", ":20020")
+	listener, err := net.Listen("tcp", ":80")
 
 	
 	if err != nil {
@@ -23,7 +23,7 @@ func main() {
 
 	
 
-	fmt.Println("..Socket created! Listening to Port ")
+	fmt.Println("..Listening..")
 
 	var buffer []byte = make([]byte, 1024)
 	//defer conn.Close()
@@ -31,6 +31,7 @@ func main() {
 	for {
 
 		conn, err := listener.Accept()
+		fmt.Println("Connected to ",conn.RemoteAddr().Network())
 
 		time.Sleep(100 * time.Millisecond)
 		fmt.Println("h")

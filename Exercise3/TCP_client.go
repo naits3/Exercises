@@ -10,7 +10,7 @@ import (
 
 func main() {
 
-	host := "129.241.187.136:33546"
+	host := "78.91.36.36:80"
 	addr, _ := net.ResolveTCPAddr("tcp",host)
 	conn, err := net.DialTCP("tcp", nil, addr)
 
@@ -19,7 +19,7 @@ func main() {
 		return
 	}
 
-	fmt.Println("Connected to server at ", host)
+	fmt.Println("Connected to server at ", conn.RemoteAddr().Network())
 
 //	defer conn.Close()
 
@@ -27,7 +27,7 @@ func main() {
 
 	for {
 		time.Sleep(1000 * time.Millisecond)
-		n, err := conn.Write([]byte("Connect to: 129.241.187.155:20020\x00"))
+		n, err := conn.Write([]byte("Tulling! :D"))
 		if err != nil {
 			fmt.Println("Error writing to server: ", err)
 			return
