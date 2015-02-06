@@ -4,21 +4,37 @@ package network
 import (
 	"fmt"
 	"net"
-	"time"
 )
 
-var connectionMap map[string]net.Conn
+var connectionMap map[string]net.Conn = nil
 
 func initNetwork(){
 	// legger til broadcast i map med key BROADCAST
 	// legger til andre connections med funksjonen requestConnections
-	go ping()
-	go listenForConnections()
-	go requestConnections()
+	//go ping()
+	//go listenForConnections()
+	//go requestConnections()
 }
 
+func FindHostIP() string{
+	ifaces, _ := net.Interfaces()
+	// handle err
+	for _, i := range ifaces {
+	    addrs, _ := i.Addrs()
+	    // handle err
+	    for _, addr := range addrs {
+	        switch v:= addr.(type) {
+	        case *net.IPAddr:
+	            if(v.IP.String() != "0.0.0.0"){
+	            	return(v.IP.String())
+	        	}
+	        }
+	    }
+	}
+	return "is_offline"
+}
 
-func SendToAll(){
+func SendPackToAll(){
 	//Sender til alle TCP adresser i dictonary
 }
 
@@ -35,11 +51,11 @@ func ReceivePack(port string, receive chan []byte) []byte {
 		packetSize, err := conn.Read(buffer)
 
 		if err != nil {
-			return []byte()
+			return []byte("0")
 		}
 
 		if packetSize > 0{
-			receive <- buffer[0:n]
+			receive <- buffer[0:packetSize]
 		}
 	}
 }
@@ -52,7 +68,7 @@ func SendPack(pack []byte, host string, chSend chan bool){
 		return
 	}
 	
-	_, err := conn.Write(pack)
+	_, err = conn.Write(pack)
 	
 	if err != nil {
 		return
@@ -62,9 +78,9 @@ func SendPack(pack []byte, host string, chSend chan bool){
 }
 
 
-func listenForConnections(port string){
+func listenForConnections(port int){
 	addr := net.UDPAddr{
-		Port: port
+		Port: port,
 	}
 
 	conn, err := net.ListenUDP("udp", &addr)
@@ -78,7 +94,7 @@ func listenForConnections(port string){
 	
 	defer conn.Close()
 	for {
-		_, address, err := conn.ReadFromUDP(buffer)
+		n, address, err := conn.ReadFromUDP(buffer)
 
 		if err != nil {
 			fmt.Println("Error reading from UDP: ",err)
@@ -86,7 +102,6 @@ func listenForConnections(port string){
 		}
 
 		if address != nil && string(buffer[0:n])=="CONNECTME" {
-			append(connectionList, address.IP)
 			// SEND OK HERE
 		}
 	}
@@ -117,14 +132,14 @@ func main(){
 	chReceive := make(chan []byte)
 	chSend := make(chan bool)	
 	
-	packetBuffer := make([]byte, 1024)
+	//packetBuffer := make([]byte, 1024)
 
 	go ReceivePack(port, chReceive)
 	go SendPack([]byte("Hei, Stian"), host, chSend)
 
 	for {
 		select {
-			case m = <- chReceive:
+			case m := <- chReceive:
 				fmt.Printf("Received: %s\n", m)
 				go SendPack([]byte("Hei, Stian"), host, chSend)
 			case <- chSend:
