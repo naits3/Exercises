@@ -7,86 +7,99 @@ import (
 	"time"
 )
 
+var connectionList []string
 
 func ReceivePack(port string, receive chan []byte) []byte {
-	fmt.Println("Creating a socket..")
 	listener, err := net.Listen("tcp", ":"+port)
 
 	if err != nil {
-		fmt.Println("Error listening to TCP: ",err)
 		return []byte("0")
 	}
 
-	fmt.Println("..Listening..")
-
-	var buffer []byte = make([]byte, 1024)
-
 	for {
-
+		var buffer []byte = make([]byte, 1024)
 		conn, err := listener.Accept()
-		fmt.Println("Connected to ",conn.RemoteAddr().String())
-
-		time.Sleep(100 * time.Millisecond)
-
-		n, err := conn.Read(buffer)
+		packetSize, err := conn.Read(buffer)
 
 		if err != nil {
-			fmt.Println("Error reading from TCP: ",err)
-			return []byte("0")
+			return []byte()
 		}
 
-		if n > 0{
+		if packetSize > 0{
 			receive <- buffer[0:n]
 		}
-		
 	}
 }
 
 func SendPack(pack []byte, host string, chSend chan bool){
-	//host := "78.91.36.36:80"
 	addr, _ := net.ResolveTCPAddr("tcp",host)
 	conn, err := net.DialTCP("tcp", nil, addr)
 
 	if err != nil{
-		fmt.Println("Error connecting to ", host, ": ",err)
+		return
+	}
+	
+	_, err := conn.Write(pack)
+	
+	if err != nil {
 		return
 	}
 
-	fmt.Println("Connected to server at ", conn.RemoteAddr().Network())
-	fmt.Println("About to write to connection..")
+	chSend <- true
+}
 
+
+func listenForConnections(port string){
+	addr := net.UDPAddr{
+		Port: port
+	}
+
+	conn, err := net.ListenUDP("udp", &addr)
+
+	if err != nil {
+		fmt.Println("Error listening to UDP: ",err)
+		return
+	}
+
+	var buffer []byte = make([]byte, 1024)
+	
+	defer conn.Close()
 	for {
-		time.Sleep(1000 * time.Millisecond)
-		
-		n, err := conn.Write(pack)
+		_, address, err := conn.ReadFromUDP(buffer)
+
 		if err != nil {
-			fmt.Println("Error writing to server: ", err)
-			return 
+			fmt.Println("Error reading from UDP: ",err)
+			return
 		}
 
-		if n > 0 {
-			fmt.Println("Wrote ",n," bytes to server at ", host)
+		if address != nil {
+			append(connectionList, address.IP)
+			// SEND OK HERE and length of ConnectionList.
 		}
-
-		chSend <- true
 	}
 }
+
+func requestConnection(ip string, port string, )
 
 func main(){
 	port := "20020"
 	host := "78.91.38.8"+":"+port
+
 	chReceive := make(chan []byte)
 	chSend := make(chan bool)	
 	
+	packetBuffer := make([]byte, 1024)
+
 	go ReceivePack(port, chReceive)
 	go SendPack([]byte("Hei, Stian"), host, chSend)
 
 	for {
 		select {
-			case <- chReceive:
-				fmt.Println("Received: %s", chReceive)
+			case m = <- chReceive:
+				fmt.Printf("Received: %s\n", m)
+				go SendPack([]byte("Hei, Stian"), host, chSend)
 			case <- chSend:
-				fmt.Println("sent!")
+				fmt.Printf("sent!")
 		}
 	}
 }
