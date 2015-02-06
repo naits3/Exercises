@@ -1,5 +1,5 @@
 
-package main
+package network
 
 import (
 	"fmt"
@@ -7,7 +7,20 @@ import (
 	"time"
 )
 
-var connectionList []string
+var connectionMap map[string]net.Conn
+
+func initNetwork(){
+	// legger til broadcast i map med key BROADCAST
+	// legger til andre connections med funksjonen requestConnections
+	go ping()
+	go listenForConnections()
+	go requestConnections()
+}
+
+
+func SendToAll(){
+	//Sender til alle TCP adresser i dictonary
+}
 
 func ReceivePack(port string, receive chan []byte) []byte {
 	listener, err := net.Listen("tcp", ":"+port)
@@ -72,14 +85,30 @@ func listenForConnections(port string){
 			return
 		}
 
-		if address != nil {
+		if address != nil && string(buffer[0:n])=="CONNECTME" {
 			append(connectionList, address.IP)
-			// SEND OK HERE and length of ConnectionList.
+			// SEND OK HERE
 		}
 	}
 }
 
-func requestConnection(ip string, port string, )
+func requestConnection(ip string, port string, ){
+	//UDP broadcast en gang ved oppstart
+	//hvis ikke connection prøv igjen altså hvis det kommer en error
+}
+
+func ping(){
+	//UDP broadcast
+}
+
+func addConnection(ip string){
+	//Legger til ip som hash variabel med en connection TCP
+}
+
+func deleteConnection(ip string){
+	//Fjerner en connection fra dictonary for TCP
+}
+
 
 func main(){
 	port := "20020"
