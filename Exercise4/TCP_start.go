@@ -5,17 +5,16 @@ import (
 	"fmt"
 	"net"
 	"time"
-	"os"
 )
 
 
-func receivePack(port string) string {
+func ReceivePack(port string, receive chan []byte) []byte {
 	fmt.Println("Creating a socket..")
 	listener, err := net.Listen("tcp", ":"+port)
 
 	if err != nil {
 		fmt.Println("Error listening to TCP: ",err)
-		return
+		return []byte("0")
 	}
 
 	fmt.Println("..Listening..")
@@ -33,17 +32,17 @@ func receivePack(port string) string {
 
 		if err != nil {
 			fmt.Println("Error reading from TCP: ",err)
-			return
+			return []byte("0")
 		}
 
 		if n > 0{
-			receive <- string(buffer[0:n])
+			receive <- buffer[0:n]
 		}
 		
 	}
 }
 
-func sendPack(pack string, host string, done chan bool){
+func SendPack(pack []byte, host string, chSend chan bool){
 	//host := "78.91.36.36:80"
 	addr, _ := net.ResolveTCPAddr("tcp",host)
 	conn, err := net.DialTCP("tcp", nil, addr)
@@ -56,40 +55,38 @@ func sendPack(pack string, host string, done chan bool){
 	fmt.Println("Connected to server at ", conn.RemoteAddr().Network())
 	fmt.Println("About to write to connection..")
 
-	n, err := conn.Write([]byte(pack))
-	if err != nil {
-		fmt.Println("Error writing to server: ", err)
-		return
+	for {
+		time.Sleep(1000 * time.Millisecond)
+		
+		n, err := conn.Write(pack)
+		if err != nil {
+			fmt.Println("Error writing to server: ", err)
+			return 
+		}
+
+		if n > 0 {
+			fmt.Println("Wrote ",n," bytes to server at ", host)
+		}
+
+		chSend <- true
 	}
-
-	if n > 0 {
-		fmt.Println("Wrote ",n," bytes to server at ", host)
-	}
-
-	done <- true
-}
-
-func promptSend(){
-
 }
 
 func main(){
-
-	port := "80"
-	chReceive := make(chan string)
+	port := "20020"
+	host := "78.91.38.8"+":"+port
+	chReceive := make(chan []byte)
 	chSend := make(chan bool)	
-	string m
 	
-	go receivePack(port)
-	go send
+	go ReceivePack(port, chReceive)
+	go SendPack([]byte("Hei, Stian"), host, chSend)
 
 	for {
 		select {
-			case m <- chReceive:
-				Println("Received: ",)
+			case <- chReceive:
+				fmt.Println("Received: %s", chReceive)
 			case <- chSend:
-				print("sent!")
+				fmt.Println("sent!")
 		}
 	}
-
 }
