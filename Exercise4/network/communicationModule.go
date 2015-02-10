@@ -5,55 +5,40 @@ import (
 	"net"
 )
 
-// Comm = Communication
+// needs to import meassageModule
+// Com = Communication
 
-func initCommModule(){
-	//initaliserer all channels(receive chan, chsend
-	//starts communication control
-	//starts also connectionControll
+func initNetwork(){
+//	InitConnModule()
+//	initComModule()
 }
 
-func runCommHandler(){
-	//Select which controls sending and receiving
+func initComModule(){
+	// Initialiserer all channels(chReceive chan, chSend
+	// Starts communication control
+	// Starts also InitConnModule
+}
+
+func comHandler(){
+	// Select which controls sending and receiving
+	for{
+		select{
+			case: // Recive meassage 
+				// Send pack for deserialization in meassageModule
+			case: //offlinecase
+		}
+	}
 }
 
 func listenPack(port string, chReceive chan []byte){
-	listener, err := net.Listen("tcp", ":"+port)
-
-	if err != nil {
-		return []byte("0")
-	}
-
-	for {
-		var buffer []byte = make([]byte, 1024)
-		conn, err := listener.Accept()
-		packetSize, err := conn.Read(buffer)
-
-		if err != nil {
-			return []byte("0")
-		}
-
-		if packetSize > 0{
-			receive <- buffer[0:packetSize]
-		}
-	}
+	// Create a TCP listener and the specified port.
+	// Accept connections and send the message to a buffer/channel
+	// Repeat
 }
 
-func SendPack(pack []byte, host string, chSend chan bool){
-	addr, _ := net.ResolveTCPAddr("tcp",host)
-	conn, err := net.DialTCP("tcp", nil, addr)
-
-	if err != nil{
-		return
-	}
-	
-	_, err = conn.Write(pack)
-	
-	if err != nil {
-		return
-	}
-
-	chSend <- true
+func SendPack(pack []byte){
+	//GetConnMap()
+	//Loop through connMap and send pack to all elevators
 }
 
 
