@@ -25,40 +25,6 @@ func runConnHandler(){
 	// Tar inn alle nødvendige channels for kommunikasjon
 }
 
-func requestConn(ip string, port string, ){
-	//UDP broadcast en gang ved oppstart
-	//hvis ikke connection prøv igjen altså hvis det kommer en error
-}
-
-func listenForNewConn(port int){
-	addr := net.UDPAddr{
-		Port: port,
-	}
-
-	conn, err := net.ListenUDP("udp", &addr)
-
-	if err != nil {
-		fmt.Println("Error listening to UDP: ",err)
-		return
-	}
-
-	var buffer []byte = make([]byte, 1024)
-	
-	defer conn.Close()
-	for {
-		n, address, err := conn.ReadFromUDP(buffer)
-
-		if err != nil {
-			fmt.Println("Error reading from UDP: ",err)
-			return
-		}
-
-		if address != nil && string(buffer[0:n])=="CONNECTME" {
-			// SEND OK HERE
-		}
-	}
-}
-
 
 func addConn(ip string){
 	//Legger til ip som hash variabel med en connection TCP
