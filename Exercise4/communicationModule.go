@@ -7,13 +7,13 @@ import (
 
 // Comm = Communication
 
-func initCommControl(){
+func initCommModule(){
 	//initaliserer all channels(receive chan, chsend
 	//starts communication control
 	//starts also connectionControll
 }
 
-func runCommControl(){
+func runCommHandler(){
 	//Select which controls sending and receiving
 }
 

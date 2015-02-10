@@ -3,10 +3,10 @@ package network
 import("testing")
 
 
-func TestFindHostIP(t *testing.T){
+func TestGetHostIP(t *testing.T){
 	// legg til ip for hosten
 	ip_answer := "192.168.1.135"
-	ip := FindHostIP()
+	ip := GetHostIP()
 	if(ip_answer != ip && ip != "is_offline"){
 		t.Error("Got ip: "+ip)
 	}

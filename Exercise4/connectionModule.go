@@ -11,13 +11,16 @@ var port string = nil							//Decide a listnening port!!
 
 // conn is connection
 
-func InitConnControl(){
-	//Run connectionConntroll thread
+func InitConnModule(){
+	//init all channls
+	//Run connHandler thread
 	//Run requestConnections once to see if there are other connections ready
 	//Starts listenForConnection from port
+	//Thread receivePingFromConn
+	//Thread sendPingToConn
 }
 
-func runConnControl(){
+func runConnHandler(){
 	// Select for Connection controll legges her
 	// Tar inn alle nødvendige channels for kommunikasjon
 }
@@ -72,7 +75,7 @@ func GetConnMap() map[string]net.Conn{
 
 // Ikke ferdig!!!
 // Sette en egen variabel for broadcast signal??
-func getBroadcastConn() string{
+func getBroadcastConn() string err{
 	ifaces, _ := net.Interfaces()
 	// handle err
 	for _, i := range ifaces {

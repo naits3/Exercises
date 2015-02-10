@@ -16,7 +16,7 @@ func initNetwork(){
 	//go requestConnections()
 }
 
-func FindHostIP() string{
+func GetHostIP() string{
 	ifaces, _ := net.Interfaces()
 	// handle err
 	for _, i := range ifaces {
@@ -38,7 +38,7 @@ func SendPackToAll(){
 	//Sender til alle TCP adresser i dictonary
 }
 
-func ReceivePack(port string, receive chan []byte) []byte {
+func receivePack(port string, receive chan []byte) []byte {
 	listener, err := net.Listen("tcp", ":"+port)
 
 	if err != nil {
@@ -60,7 +60,7 @@ func ReceivePack(port string, receive chan []byte) []byte {
 	}
 }
 
-func SendPack(pack []byte, host string, chSend chan bool){
+func sendPack(pack []byte, host string, chSend chan bool){
 	addr, _ := net.ResolveTCPAddr("tcp",host)
 	conn, err := net.DialTCP("tcp", nil, addr)
 
