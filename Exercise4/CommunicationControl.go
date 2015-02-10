@@ -5,13 +5,15 @@ import (
 	"net"
 )
 
-func initCommunicationControl(){
+// Comm = Communication
+
+func initCommControl(){
 	//initaliserer all channels(receive chan, chsend
 	//starts communication control
 	//starts also connectionControll
 }
 
-func runCommunicationControl(){
+func runCommControl(){
 	//Select which controls sending and receiving
 }
 

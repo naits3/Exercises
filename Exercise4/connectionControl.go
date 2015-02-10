@@ -5,28 +5,29 @@ import (
 	"net"
 )
 
-var connectionMap map[string]net.Conn = nil
-var broadcastConnection net.Conn = nil   		//Variable for broadcast conn
-var port string = nil
+var connMap map[string]net.Conn = nil
+var port string = nil							//Decide a listnening port!!
 
-func InitConnectionControl(){
+
+// conn is connection
+
+func InitConnControl(){
 	//Run connectionConntroll thread
 	//Run requestConnections once to see if there are other connections ready
 	//Starts listenForConnection from port
 }
 
-func runConnectionControl(){
+func runConnControl(){
 	// Select for Connection controll legges her
 	// Tar inn alle nødvendige channels for kommunikasjon
 }
 
-func requestConnections(ip string, port string, ){
+func requestConn(ip string, port string, ){
 	//UDP broadcast en gang ved oppstart
 	//hvis ikke connection prøv igjen altså hvis det kommer en error
 }
 
-
-func listenForNewConnections(port int){
+func listenForNewConn(port int){
 	addr := net.UDPAddr{
 		Port: port,
 	}
@@ -55,28 +56,23 @@ func listenForNewConnections(port int){
 	}
 }
 
-func searchForBrokenConnection(){
-	//UDP broadcast that listens for broken connections in the map
-	//For each signal sent the number of replies should be equal to number of connections
-	//Var tidligere ping funksjonen
-}
 
-func addConnection(ip string){
+func addConn(ip string){
 	//Legger til ip som hash variabel med en connection TCP
 }
 
-func deleteConnection(ip string){
+func removeConn(ip string){
 	//Fjerner en connection fra dictonary for TCP
 }
 
-func GetAllConnections() map[string]net.Conn{
+func GetConnMap() map[string]net.Conn{
 	// Sender alle TCP til kommunikasjonskontroll
 	// Må ha variable kontroll med addConn.. og deleteConn..
 }
 
 // Ikke ferdig!!!
 // Sette en egen variabel for broadcast signal??
-func getBroadcastConnection() string{
+func getBroadcastConn() string{
 	ifaces, _ := net.Interfaces()
 	// handle err
 	for _, i := range ifaces {
@@ -94,6 +90,15 @@ func getBroadcastConnection() string{
 	return "is_offline"
 }
 
+func sendPingToConn(){
+	//UDP broadcast that listens for broken connections in the map
+	//For each signal sent the number of replies should be equal to number of connections
+	//Var tidligere ping funksjonen
+}
+
+func recievePingFromConn(){
+	//Keeps track on connections avaliability
+}
 
 
 
