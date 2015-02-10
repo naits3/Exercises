@@ -3,6 +3,7 @@ package network
 import (
 	"fmt"
 	"net"
+	"main"
 )
 
 var connMap map[string]net.Conn = nil
@@ -13,16 +14,15 @@ var port string = nil							//Decide a listnening port!!
 
 func InitConnModule(){
 	//init all channls
-	//Run connHandler thread
-	//Run requestConnections once to see if there are other connections ready
-	//Starts listenForConnection from port
-	//Thread receivePingFromConn
-	//Thread sendPingToConn
+	//Thread Run connHandler
+	//Create broadcast connection
+	//Thread listenPing
+	//Thread sendPing
 }
 
 func runConnHandler(){
 	// Select for Connection controll legges her
-	// Tar inn alle nødvendige channels for kommunikasjon
+	// takes in necessary channels
 }
 
 
@@ -39,9 +39,19 @@ func GetConnMap() map[string]net.Conn{
 	// Må ha variable kontroll med addConn.. og deleteConn..
 }
 
+func sendPing(udpConn net.Conn){
+	//UDP broadcast that listens for broken connections in the map
+	//For each signal sent the number of replies should be equal to number of connections
+	//Var tidligere ping funksjonen
+}
+
+func listenPing(port string){
+	//Keeps track on connections avaliability
+}
+
 // Ikke ferdig!!!
 // Sette en egen variabel for broadcast signal??
-func getBroadcastConn() string err{
+func createBroadcastConn() string{
 	ifaces, _ := net.Interfaces()
 	// handle err
 	for _, i := range ifaces {
@@ -59,14 +69,12 @@ func getBroadcastConn() string err{
 	return "is_offline"
 }
 
-func sendPingToConn(){
-	//UDP broadcast that listens for broken connections in the map
-	//For each signal sent the number of replies should be equal to number of connections
-	//Var tidligere ping funksjonen
+func GetPort() string{
+	return port
 }
 
-func recievePingFromConn(){
-	//Keeps track on connections avaliability
+func getHostIP(){
+
 }
 
 

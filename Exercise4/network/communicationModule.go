@@ -17,7 +17,7 @@ func runCommHandler(){
 	//Select which controls sending and receiving
 }
 
-func receivePack(port string, chReceive chan []byte){
+func listenPack(port string, chReceive chan []byte){
 	listener, err := net.Listen("tcp", ":"+port)
 
 	if err != nil {
