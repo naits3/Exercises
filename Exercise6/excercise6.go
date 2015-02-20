@@ -9,53 +9,43 @@ import(
 			      )
 
 func main(){
-	nr := backup()
+
+	host := "localhost:20020"
+	udpAdr, _ := net.ResolveUDPAddr("udp",host)
+	conn, _ := net.ListenUDP("udp",udpAdr)
+
+	nr := backup(conn)
+	conn.Close()
+
 	primary(nr)
+	
 }
 
-func backup() (int){
+func backup(conn net.Conn) (int){
 	i := 0
 	chListener := make(chan int)
-	addr := net.UDPAddr{
-		Port: 20020,
-	}
-
-	conn, err := net.ListenUDP("udp", &addr)
-	if err != nil {
-		fmt.Println("Error listening to UDP: ",err)
-		return 0
-	}
-
-	timer := time.NewTimer(time.Second)
-	var buffer []byte = make([]byte, 1500)
 	
-	
-	go func(chListener chan int){
+	go func(chListener chan int, conn net.Conn){
+		var buffer []byte = make([]byte, 1500)		
+				
 		for {
-			time.Sleep(100 * time.Millisecond)
-			n, address, err := conn.ReadFromUDP(buffer)
-			
-			if err != nil {
-				fmt.Println("Error reading from UDP: ",err)
-				return
-			}
-
-			if address != nil {
-				messageInt , _ := strconv.Atoi(string(buffer[0:n]))
-				chListener <- messageInt
-			}
+			n, _ := conn.Read(buffer)
+			messageInt , _ := strconv.Atoi(string(buffer[0:n]))
+			chListener <- messageInt
 		}
-	}(chListener)
-
+		
+	}(chListener, conn)
+	
 	for{
 		select{
-			case i = <-chListener:
-				timer = time.NewTimer(time.Second)
-			case <-timer.C:
+			case i = <- chListener:
+				continue
+			case <-time.After(time.Second):
 				return i
 		}
 	}
 }
+
 
 func primary(nr int){
 	createNewBackup();
@@ -67,13 +57,14 @@ func primary(nr int){
 		nr_memory <- i
 		fmt.Println(i)
 		i++
-		time.Sleep(500*time.Millisecond)
+		time.Sleep(100*time.Millisecond)
 	}
 }
 
 func udpSender(nr_memory chan int){
-	host := "127.0.0.1:20020" // IP you want to send TO. Is the port destination or source?
-	conn, err := net.Dial("udp",host)
+	host := "localhost:20020" // IP you want to send TO. Is the port destination or source?
+	udpAdr, _ := net.ResolveUDPAddr("udp",host)
+	conn, err := net.DialUDP("udp",nil,udpAdr)
 
 	if err != nil{
 		fmt.Println("Error connecting to ", host, ": ",err)
