@@ -111,6 +111,7 @@ procedure exercise7 is
 
             Prev := Num;
             delay 0.5;
+			Manager.Should_Commit := True;
         end loop;
 	
     end Transaction_Worker;
